@@ -18,6 +18,14 @@ class Form extends Model
         return $this->belongsTo(User::class, 'user_id');
     }
 
+    public function scopeSearch($query, $search)
+    {
+        return $query->where(function ($query) use ($search) {
+            $query->where('email', 'like', "%$search%")
+                ->where('type', 'like', "%$search%");
+        });
+    }
+
     public function getCreatedAtAttribute()
     {
         return Carbon::parse($this->attributes['created_at'])->format('Y-m-d H:i:s');

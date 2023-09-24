@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\FormController;
 use App\Http\Controllers\Api\UserController;
 
 Route::group(['prefix' => 'auth', 'as' => 'auth.'], function () {
@@ -17,10 +18,12 @@ Route::group(['prefix' => 'user', 'as' => 'user.', 'middleware' => 'user'], func
     Route::post('/update', [UserController::class, 'update'])->name('update');
 });
 
-Route::group(['prefix' => 'form', 'as' => 'form.', 'middleware' => 'user'], function () {
-    Route::get('/', [ComponentController::class, 'index']);
-    Route::get('/{id}', [ComponentController::class, 'show']);
-    Route::post('/create', [ComponentController::class, 'store']);
-    Route::patch('/update/{id}', [ComponentController::class, 'update']);
-    Route::delete('/delete/{id}', [ComponentController::class, 'delete']);
+Route::group(['prefix' => 'form', 'as' => 'form.'], function () {
+    Route::group(['prefix' => 'form', 'as' => 'form.', 'middleware' => 'admin'], function () {
+        Route::get('/', [FormController::class, 'index']);
+        Route::get('/{id}', [FormController::class, 'show']);
+    });
+    Route::group(['prefix' => 'form', 'as' => 'form.', 'middleware' => 'user'], function () {
+        Route::post('/create', [FormController::class, 'store']);
+    });
 });
